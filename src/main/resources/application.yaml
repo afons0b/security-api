@@ -1,3 +1,28 @@
 spring:
   application:
     name: springfocus
+
+  datasource:
+    url: jdbc:mysql://localhost:3308/dbsec?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: admin
+    password: 123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  logging:
+    level:
+      org.springframework.security: DEBUG
+
+  jwt:
+    public:
+      key: classpath:app.pub
+    private:
+      key: classpath:app.key
+
