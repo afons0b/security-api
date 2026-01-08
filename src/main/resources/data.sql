@@ -1,2 +1,2 @@
-insert into tb_roles (id, name) values (1, 'ADMIN');
-insert into tb_roles (id, name) values (2, 'BASIC'):
+insert IGNORE into tb_roles (role_id, name) values (2, 'ADMIN');
+insert IGNORE into tb_roles (role_id, name) values (1, 'BASIC');

@@ -1,4 +1,4 @@
 package securityproject.com.springfocus.request;
 
-public record LoginRequest(String username, String password) {
+public record LoginRequest(String name, String password) {
 }
