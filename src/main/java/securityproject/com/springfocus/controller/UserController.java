@@ -5,9 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import securityproject.com.springfocus.domain.Role;
 import securityproject.com.springfocus.domain.User;
@@ -15,9 +13,11 @@ import securityproject.com.springfocus.repository.RoleRepository;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.response.UserPostResponse;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequestMapping("/v1/token-jwt")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -26,9 +26,13 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    @PostMapping
+    @PostMapping("/users")
     public ResponseEntity<Void> save(@RequestBody UserPostResponse userPostResponse){
+
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
+        if (basicRole == null){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "role basic was not found");
+        }
 
         var userFromdb = userRepository.findByName(userPostResponse.name());
         if (userFromdb.isPresent()){
@@ -42,5 +46,13 @@ public class UserController {
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> findAll(){
+
+        var allUsers = userRepository.findAll();
+
+        return ResponseEntity.ok(allUsers);
     }
 }

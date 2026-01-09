@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import securityproject.com.springfocus.domain.Role;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.request.LoginRequest;
 import securityproject.com.springfocus.response.LoginResponse;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,11 +40,18 @@ public class TokenController {
         var now = Instant.now();
         var expiresIn = 300L;
 
+        var scope = user.get().getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
+
         var claims = JwtClaimsSet.builder()
                 .issuer("sec-backend")
                 .subject(user.get().getUuid().toString())
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(expiresIn)).build();
+                .expiresAt(now.plusSeconds(expiresIn))
+                .claim("scope", scope)
+                .build();
 
         var jwtValue = jwtEncoder
                 .encode(JwtEncoderParameters.from(claims)).getTokenValue();

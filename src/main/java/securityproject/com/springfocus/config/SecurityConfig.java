@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +26,7 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
@@ -39,6 +41,9 @@ public class SecurityConfig {
         http.
                 authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/v1/token-jwt/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/token-jwt/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/token-jwt/users").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
