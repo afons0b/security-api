@@ -38,7 +38,7 @@ public class User {
     )
     private Set<Role> roles;
 
-    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder){
-        return passwordEncoder.matches(loginRequest.password(), this.password);
+    public boolean isLoginCorrect(String rawPassword, PasswordEncoder passwordEncoder){
+        return passwordEncoder.matches(rawPassword, this.password);
     }
 }

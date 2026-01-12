@@ -15,6 +15,7 @@ import securityproject.com.springfocus.domain.Role;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.request.LoginRequest;
 import securityproject.com.springfocus.response.LoginResponse;
+import securityproject.com.springfocus.service.LoginService;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -24,38 +25,12 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/token-jwt")
 public class TokenController {
 
-    private final JwtEncoder jwtEncoder;
-    private final UserRepository repository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final LoginService service;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        var response = service.login(loginRequest);
 
-        var user = repository.findByName(loginRequest.name());
-
-        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest, passwordEncoder)){
-            throw new BadCredentialsException("user or password is invalid");
-        }
-
-        var now = Instant.now();
-        var expiresIn = 300L;
-
-        var scope = user.get().getRoles()
-                .stream()
-                .map(Role::getName)
-                .collect(Collectors.joining(" "));
-
-        var claims = JwtClaimsSet.builder()
-                .issuer("sec-backend")
-                .subject(user.get().getUuid().toString())
-                .issuedAt(now)
-                .expiresAt(now.plusSeconds(expiresIn))
-                .claim("scope", scope)
-                .build();
-
-        var jwtValue = jwtEncoder
-                .encode(JwtEncoderParameters.from(claims)).getTokenValue();
-
-        return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
+        return ResponseEntity.ok(response);
     }
 }
