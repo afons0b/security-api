@@ -3,16 +3,12 @@ package securityproject.com.springfocus.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import securityproject.com.springfocus.domain.Role;
 import securityproject.com.springfocus.domain.User;
-import securityproject.com.springfocus.repository.RoleRepository;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.request.UserPostRequest;
 import securityproject.com.springfocus.response.UserPostResponse;
+import securityproject.com.springfocus.service.UserService;
 
 import java.util.List;
 import java.util.Set;
@@ -23,30 +19,14 @@ import java.util.Set;
 public class UserController {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService service;
 
-    @Transactional
     @PostMapping("/users")
     public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest request){
 
-        var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-        if (basicRole == null){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "role basic was not found");
-        }
+        var response = service.save(request);
 
-        var userFromdb = userRepository.findByName(request.getName());
-        if (userFromdb.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        var user = new User();
-        user.setName(request.getName());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRoles(Set.of(basicRole));
-        userRepository.save(user);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/users")
