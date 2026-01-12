@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import securityproject.com.springfocus.domain.User;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.request.UserPostRequest;
+import securityproject.com.springfocus.response.UserGetResponse;
 import securityproject.com.springfocus.response.UserPostResponse;
 import securityproject.com.springfocus.service.UserService;
 
@@ -30,9 +31,9 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> findAll(){
+    public ResponseEntity<List<UserGetResponse>> findAll(){
 
-        var allUsers = userRepository.findAll();
+        var allUsers = service.findAll();
 
         return ResponseEntity.ok(allUsers);
     }

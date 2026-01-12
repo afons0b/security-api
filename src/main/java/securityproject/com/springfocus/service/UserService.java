@@ -11,8 +11,10 @@ import securityproject.com.springfocus.mapper.UserMapper;
 import securityproject.com.springfocus.repository.RoleRepository;
 import securityproject.com.springfocus.repository.UserRepository;
 import securityproject.com.springfocus.request.UserPostRequest;
+import securityproject.com.springfocus.response.UserGetResponse;
 import securityproject.com.springfocus.response.UserPostResponse;
 
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -35,5 +37,13 @@ public class UserService {
         userRepository.save(user);
 
         return mapper.toUserPostResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserGetResponse> findAll(){
+        return userRepository.findAll()
+                .stream()
+                .map(mapper::toUserGetResponse)
+                .toList();
     }
 }

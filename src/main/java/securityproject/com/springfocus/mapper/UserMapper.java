@@ -6,6 +6,7 @@ import org.mapstruct.MappingConstants;
 import securityproject.com.springfocus.annotations.EncodeMapping;
 import securityproject.com.springfocus.domain.User;
 import securityproject.com.springfocus.request.UserPostRequest;
+import securityproject.com.springfocus.response.UserGetResponse;
 import securityproject.com.springfocus.response.UserPostResponse;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = PassWordEncoderMapper.class)
@@ -17,4 +18,6 @@ public interface UserMapper {
     User toUser (UserPostRequest request);
 
     UserPostResponse toUserPostResponse (User user);
+
+    UserGetResponse toUserGetResponse (User user);
 }
