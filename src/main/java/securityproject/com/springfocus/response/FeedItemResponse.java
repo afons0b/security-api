@@ -1,4 +1,15 @@
 package securityproject.com.springfocus.response;
 
-public record FeedItemResponse(Long id, String content, String name) {
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class FeedItemResponse {
+
+    private Long tweetId;
+    private String content;
+    private String name;
 }

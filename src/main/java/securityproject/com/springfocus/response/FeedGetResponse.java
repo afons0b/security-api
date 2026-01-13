@@ -1,10 +1,20 @@
 package securityproject.com.springfocus.response;
 
+import lombok.*;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
+
 import java.util.List;
 
-public record FeedGetResponse(List<FeedItemResponse> feedItemResponses,
-                              int page,
-                              int pageSize,
-                              int totalPages,
-                              long totalElements) {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class FeedGetResponse {
+    private List<FeedItemResponse> feedItemResponses;
+    private int page;
+    private int pageSize;
+    private int totalPages;
+    private long totalElements;
+
 }
